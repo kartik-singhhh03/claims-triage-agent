@@ -41,15 +41,7 @@ export default function Sidebar({
   };
 
   return (
-    <>
-      {!isOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <nav className="sidebar-nav">
           <ul className="nav-list">
             {NAV_ITEMS.map((item) => (
@@ -76,6 +68,5 @@ export default function Sidebar({
           </button>
         </div>
       </aside>
-    </>
   );
 }
