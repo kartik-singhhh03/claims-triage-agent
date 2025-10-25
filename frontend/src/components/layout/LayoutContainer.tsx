@@ -18,13 +18,20 @@ export default function LayoutContainer({
   onSearchSubmit,
   isRealtimeConnected = true,
 }: LayoutContainerProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleMenuToggle = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   const handleSidebarClose = () => {
+    setSidebarOpen(false);
+  };
+
+  const handleNavigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+    }
     setSidebarOpen(false);
   };
 
@@ -35,10 +42,11 @@ export default function LayoutContainer({
         onMenuToggle={handleMenuToggle}
         isRealtimeConnected={isRealtimeConnected}
       />
+      {sidebarOpen && <div className="sidebar-overlay" onClick={handleSidebarClose}></div>}
       <div className="layout-wrapper">
         <Sidebar
           currentPath={currentPath}
-          onNavigate={onNavigate}
+          onNavigate={handleNavigate}
           isOpen={sidebarOpen}
           onClose={handleSidebarClose}
         />
