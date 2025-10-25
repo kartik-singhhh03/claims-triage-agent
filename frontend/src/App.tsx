@@ -85,3 +85,11 @@ function AppContent() {
     </div>
   );
 }
+
+export default function App() {
+  return (
+    <RealtimeProvider>
+      <AppContent />
+    </RealtimeProvider>
+  );
+}
