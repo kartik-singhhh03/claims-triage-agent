@@ -119,18 +119,6 @@
   .sidebar.open {
     transform: translateX(0);
   }
-
-  .sidebar-overlay {
-    display: block;
-  }
-
-  .sidebar-overlay {
-    display: none;
-  }
-
-  .sidebar.open ~ .sidebar-overlay {
-    display: block;
-  }
 }
 
 @media (max-width: 480px) {
