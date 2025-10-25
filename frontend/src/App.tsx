@@ -5,13 +5,14 @@ import DashboardPage from './pages/DashboardPage';
 import ClaimsPage from './pages/ClaimsPage';
 import QueuesPage from './pages/QueuesPage';
 import RulesPage from './pages/RulesPage';
+import { RealtimeProvider, useRealtime } from './contexts/RealtimeContext';
 import './App.css';
 
 type PagePath = '/dashboard' | '/claims' | '/queues' | '/rules' | '/settings' | '/';
 
-export default function App() {
+function AppContent() {
   const [currentPage, setCurrentPage] = useState<PagePath>('/');
-  const [isRealtimeConnected] = useState(true);
+  const { isConnected: isRealtimeConnected } = useRealtime();
 
   const handleNavigate = (path: string) => {
     setCurrentPage(path as PagePath);
