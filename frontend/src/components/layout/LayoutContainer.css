@@ -1,0 +1,67 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--bg-primary);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 49;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content-area {
+    padding: 1.5rem;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content-area {
+    padding: 1rem;
+  }
+}
+
+/* Scrollbar styling for main content */
+.main-content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content-area::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.main-content-area::-webkit-scrollbar-thumb {
+  background: var(--neon-purple);
+  border-radius: 4px;
+}
+
+.main-content-area::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-pink);
+}

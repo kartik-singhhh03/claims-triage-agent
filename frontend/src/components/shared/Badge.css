@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--bg-primary);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+.badge-icon {
+  font-size: 0.875rem;
+}
+
+.badge-severity {
+  text-transform: uppercase;
+}
+
+.badge-fraud {
+  text-transform: uppercase;
+}
+
+.badge-status {
+  text-transform: capitalize;
+}
