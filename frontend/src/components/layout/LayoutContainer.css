@@ -3,12 +3,14 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-primary);
+  position: relative;
 }
 
 .layout-wrapper {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .main-content-area {
@@ -18,10 +20,25 @@
   background-color: var(--bg-primary);
 }
 
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 49;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-content-area {
     padding: 1.5rem;
+  }
+
+  .sidebar-overlay {
+    display: block;
   }
 }
 
