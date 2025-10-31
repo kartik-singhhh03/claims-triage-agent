@@ -1,0 +1,20 @@
+# Core
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+python-dotenv
+python-multipart
+# Text extraction
+pdfminer.six
+pillow
+pytesseract
+pdf2image
+# LLM
+openai
+# (optional) embeddings or other ML libs
+sentence-transformers
+# Pathway (optional streaming mode)
+pathway
+# utils
+aiofiles
