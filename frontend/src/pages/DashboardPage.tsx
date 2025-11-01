@@ -171,6 +171,14 @@ export default function DashboardPage({ claimId }: DashboardPageProps) {
     console.log(`Opening claim detail: ${claimId}`);
   };
 
+  if (claimId && selectedClaim) {
+    return (
+      <div className="dashboard-page">
+        <ClaimDetailSection claim={selectedClaim} isLoading={isClaimLoading} />
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
