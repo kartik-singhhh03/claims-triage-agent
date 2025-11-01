@@ -1,16 +1,21 @@
+import UploadSection from '../components/landing/UploadSection';
 import './LandingPage.css';
 
 interface LandingPageProps {
   onGetStarted?: () => void;
   onWatchDemo?: () => void;
   onEarlyAccess?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 export default function LandingPage({
   onGetStarted,
   onWatchDemo,
   onEarlyAccess,
+  onNavigate,
 }: LandingPageProps) {
+  const handleNavigate = onNavigate || onGetStarted || (() => {});
+
   return (
     <div className="landing-page">
       {/* Hero Section */}
@@ -61,6 +66,9 @@ export default function LandingPage({
           <div className="gradient-orb orb-2"></div>
         </div>
       </section>
+
+      {/* Upload PDF Section - Replaces Start Free Trial */}
+      <UploadSection onNavigate={handleNavigate} />
 
       {/* Features Section */}
       <section className="features-section">
