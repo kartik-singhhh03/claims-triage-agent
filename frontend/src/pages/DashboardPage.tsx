@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import KpiCard from '../components/dashboard/KpiCard';
 import QueuesOverview from '../components/dashboard/QueuesOverview';
 import LiveFeed from '../components/dashboard/LiveFeed';
+import ClaimDetailSection from '../components/claims/ClaimDetailSection';
+import { useClaims } from '../hooks/useClaims';
+import { useToast } from '../contexts/ToastContext';
 import './DashboardPage.css';
 
 interface KpiMetrics {
@@ -29,13 +32,34 @@ interface FeedEvent {
   severity?: 'high' | 'medium' | 'low';
 }
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  claimId?: string;
+}
+
+export default function DashboardPage({ claimId }: DashboardPageProps) {
+  const { fetchClaimDetails, isLoading: isClaimLoading, claimData } = useClaims();
+  const { addToast } = useToast();
+  const [selectedClaim, setSelectedClaim] = useState<any | null>(null);
+
   const [metrics, setMetrics] = useState<KpiMetrics>({
     totalClaims: 2451,
     inProgress: 185,
     highSeverity: 12,
     fraudAlerts: 8,
   });
+
+  useEffect(() => {
+    if (claimId) {
+      fetchClaimDetails(claimId).then((data) => {
+        if (data) {
+          setSelectedClaim(data);
+          addToast('Claim details loaded successfully', 'success');
+        } else {
+          addToast('Failed to load claim details', 'error');
+        }
+      });
+    }
+  }, [claimId, fetchClaimDetails, addToast]);
 
   const [queues, setQueues] = useState<Queue[]>([
     {
@@ -146,6 +170,14 @@ export default function DashboardPage() {
   const handleFeedClick = (claimId: string) => {
     console.log(`Opening claim detail: ${claimId}`);
   };
+
+  if (claimId && selectedClaim) {
+    return (
+      <div className="dashboard-page">
+        <ClaimDetailSection claim={selectedClaim} isLoading={isClaimLoading} />
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-page">
