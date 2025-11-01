@@ -1,24 +1,11 @@
-import UploadSection from '../components/landing/UploadSection';
+import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
-interface LandingPageProps {
-  onGetStarted?: () => void;
-  onWatchDemo?: () => void;
-  onEarlyAccess?: () => void;
-  onNavigate?: (path: string) => void;
-}
-
-export default function LandingPage({
-  onGetStarted,
-  onWatchDemo,
-  onEarlyAccess,
-  onNavigate,
-}: LandingPageProps) {
-  const handleNavigate = onNavigate || onGetStarted || (() => {});
+export default function LandingPage() {
+  const navigate = useNavigate();
 
   return (
     <div className="landing-page">
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-badge slide-up">
@@ -40,17 +27,17 @@ export default function LandingPage({
           <div className="hero-cta-buttons slide-up">
             <button
               className="btn-primary"
-              onClick={onGetStarted}
-              aria-label="Start Free Trial"
+              onClick={() => navigate('/upload')}
+              aria-label="Claim Your Insurance"
             >
-              Start Free Trial →
+              Claim Your Insurance →
             </button>
             <button
               className="btn-secondary"
-              onClick={onWatchDemo}
-              aria-label="Watch Demo"
+              onClick={() => navigate('/team')}
+              aria-label="Team Panel"
             >
-              Watch Demo
+              Team Panel
             </button>
           </div>
 
@@ -67,10 +54,6 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Upload PDF Section - Replaces Start Free Trial */}
-      <UploadSection onNavigate={handleNavigate} />
-
-      {/* Features Section */}
       <section className="features-section">
         <div className="section-header">
           <h2 className="section-title">Built for Speed, Powered by Intelligence</h2>
@@ -111,7 +94,6 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Problem Statement Section */}
       <section className="problem-section">
         <div className="section-header">
           <h2 className="section-title">
@@ -146,7 +128,6 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="how-it-works-section">
         <div className="section-header">
           <h2 className="section-title">From Submission to Resolution in Seconds</h2>
@@ -185,7 +166,6 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Social Proof Section */}
       <section className="social-proof-section">
         <div className="section-header">
           <h2 className="section-title">Trusted by Forward-Thinking Insurance Teams</h2>
@@ -202,7 +182,6 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Final CTA Section */}
       <section className="final-cta-section">
         <div className="cta-content">
           <h2 className="cta-headline">
@@ -213,10 +192,10 @@ export default function LandingPage({
           </p>
           <button
             className="btn-primary btn-large"
-            onClick={onEarlyAccess}
-            aria-label="Get Early Access"
+            onClick={() => navigate('/upload')}
+            aria-label="Claim Your Insurance"
           >
-            Get Early Access →
+            Claim Your Insurance →
           </button>
         </div>
       </section>
