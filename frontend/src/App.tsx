@@ -6,16 +6,26 @@ import ClaimsPage from './pages/ClaimsPage';
 import QueuesPage from './pages/QueuesPage';
 import RulesPage from './pages/RulesPage';
 import { RealtimeProvider, useRealtime } from './contexts/RealtimeContext';
+import { ToastProvider } from './contexts/ToastContext';
 import './App.css';
 
 type PagePath = '/dashboard' | '/claims' | '/queues' | '/rules' | '/settings' | '/';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PagePath>('/');
+  const [dashboardParams, setDashboardParams] = useState<{ claimId?: string } | null>(null);
   const { isConnected: isRealtimeConnected } = useRealtime();
 
   const handleNavigate = (path: string) => {
-    setCurrentPage(path as PagePath);
+    if (path.startsWith('/dashboard?')) {
+      const params = new URLSearchParams(path.split('?')[1]);
+      const claimId = params.get('claim_id');
+      setDashboardParams(claimId ? { claimId } : null);
+      setCurrentPage('/dashboard');
+    } else {
+      setCurrentPage(path as PagePath);
+      setDashboardParams(null);
+    }
   };
 
   const handleSearchSubmit = (query: string) => {
