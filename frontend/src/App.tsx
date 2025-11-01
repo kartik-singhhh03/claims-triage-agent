@@ -48,7 +48,7 @@ function AppContent() {
   const renderPage = () => {
     switch (currentPage) {
       case '/dashboard':
-        return <DashboardPage />;
+        return <DashboardPage claimId={dashboardParams?.claimId} />;
       case '/claims':
         return <ClaimsPage />;
       case '/queues':
@@ -61,6 +61,7 @@ function AppContent() {
             onGetStarted={handleGetStarted}
             onWatchDemo={handleWatchDemo}
             onEarlyAccess={handleEarlyAccess}
+            onNavigate={handleNavigate}
           />
         );
       default:
@@ -76,6 +77,7 @@ function AppContent() {
           onGetStarted={handleGetStarted}
           onWatchDemo={handleWatchDemo}
           onEarlyAccess={handleEarlyAccess}
+          onNavigate={handleNavigate}
         />
       </div>
     );
@@ -99,7 +101,9 @@ function AppContent() {
 export default function App() {
   return (
     <RealtimeProvider>
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </RealtimeProvider>
   );
 }
