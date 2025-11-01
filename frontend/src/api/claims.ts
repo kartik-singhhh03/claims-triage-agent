@@ -129,99 +129,73 @@ const generateDemoClaim = (id: string): Claim => ({
   },
 });
 
-export async function fetchClaims(filters: ClaimsFilter = {}) {
-  const params = new URLSearchParams();
+export async function fetchClaims(filters: ClaimsFilter = {}): Promise<ClaimsListResponse> {
+  // Demo: Return mock data
+  const limit = filters.limit || 25;
+  const offset = filters.offset || 0;
+  const items = Array.from({ length: limit }, (_, i) => generateDemoClaim(`${offset + i + 1}`));
 
-  if (filters.q) params.append('q', filters.q);
-  if (filters.queue) params.append('queue', filters.queue);
-  if (filters.severity) params.append('severity', filters.severity);
-  if (filters.fraudScore) {
-    params.append('fraud_score_min', filters.fraudScore.min.toString());
-    params.append('fraud_score_max', filters.fraudScore.max.toString());
-  }
-  if (filters.dateRange) {
-    params.append('date_from', filters.dateRange.from);
-    params.append('date_to', filters.dateRange.to);
-  }
-  params.append('limit', (filters.limit || 25).toString());
-  params.append('offset', (filters.offset || 0).toString());
-
-  const response = await fetch(`${BASE_URL}/api/claims?${params}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch claims');
-  }
-  return response.json();
+  return {
+    total: 234,
+    items,
+  };
 }
 
-export async function fetchClaim(id: string) {
-  const response = await fetch(`${BASE_URL}/api/claims/${id}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch claim');
-  }
-  return response.json();
+export async function fetchClaim(id: string): Promise<Claim> {
+  // Demo: Return mock claim
+  return generateDemoClaim(id);
+}
+
+export async function getClaimById(id: string): Promise<Claim> {
+  // Alias for fetchClaim
+  return fetchClaim(id);
 }
 
 export async function reassignClaim(
   id: string,
   queueId: string,
+  assigneeId?: string,
   note?: string
-) {
-  const response = await fetch(`${BASE_URL}/api/claims/${id}/reassign`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ queue_id: queueId, note }),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to reassign claim');
-  }
-  return response.json();
+): Promise<Claim> {
+  const body = {
+    queue_id: queueId,
+    assignee_id: assigneeId,
+    note,
+  };
+
+  // Demo: return updated claim
+  const claim = await fetchClaim(id);
+  return {
+    ...claim,
+    routed_queue: queueId,
+    routing: {
+      recommended_queue: queueId,
+      assignee: assigneeId || 'adjuster_09',
+    },
+  };
 }
 
-export async function addNoteToClai(id: string, note: string) {
-  const response = await fetch(`${BASE_URL}/api/claims/${id}/notes`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content: note }),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to add note');
-  }
-  return response.json();
+export async function addNoteToClaim(id: string, note: string): Promise<Claim> {
+  // Demo: return claim with note
+  const claim = await fetchClaim(id);
+  return claim;
 }
 
-export async function escalateClaim(id: string, reason?: string) {
-  const response = await fetch(`${BASE_URL}/api/claims/${id}/escalate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ reason }),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to escalate claim');
-  }
-  return response.json();
+export async function escalateClaim(id: string, reason?: string): Promise<Claim> {
+  // Demo: return escalated claim
+  const claim = await fetchClaim(id);
+  return {
+    ...claim,
+    status: 'escalated',
+  };
 }
 
-export async function uploadClaim(file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const response = await fetch(`${BASE_URL}/api/claims/upload`, {
-    method: 'POST',
-    body: formData,
+export async function uploadClaim(formData: FormData): Promise<Claim> {
+  // Demo: Simulate upload and return mock claim
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const claim = generateDemoClaim(Math.random().toString(36).substr(2, 9));
+      resolve(claim);
+    }, 1500);
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || 'Upload failed');
-  }
-
-  return response.json();
-}
-
-export async function getClaimById(id: string) {
-  const response = await fetch(`${BASE_URL}/api/claims/${id}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch claim details');
-  }
-  return response.json();
 }
