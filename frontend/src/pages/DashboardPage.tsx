@@ -37,12 +37,29 @@ interface DashboardPageProps {
 }
 
 export default function DashboardPage({ claimId }: DashboardPageProps) {
+  const { fetchClaimDetails, isLoading: isClaimLoading, claimData } = useClaims();
+  const { addToast } = useToast();
+  const [selectedClaim, setSelectedClaim] = useState<any | null>(null);
+
   const [metrics, setMetrics] = useState<KpiMetrics>({
     totalClaims: 2451,
     inProgress: 185,
     highSeverity: 12,
     fraudAlerts: 8,
   });
+
+  useEffect(() => {
+    if (claimId) {
+      fetchClaimDetails(claimId).then((data) => {
+        if (data) {
+          setSelectedClaim(data);
+          addToast('Claim details loaded successfully', 'success');
+        } else {
+          addToast('Failed to load claim details', 'error');
+        }
+      });
+    }
+  }, [claimId, fetchClaimDetails, addToast]);
 
   const [queues, setQueues] = useState<Queue[]>([
     {
