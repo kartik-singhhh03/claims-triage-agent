@@ -131,3 +131,28 @@ export async function escalateClaim(id: string, reason?: string) {
   }
   return response.json();
 }
+
+export async function uploadClaim(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${BASE_URL}/api/claims/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || 'Upload failed');
+  }
+
+  return response.json();
+}
+
+export async function getClaimById(id: string) {
+  const response = await fetch(`${BASE_URL}/api/claims/${id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch claim details');
+  }
+  return response.json();
+}
