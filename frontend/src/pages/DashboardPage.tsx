@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import KpiCard from '../components/dashboard/KpiCard';
 import QueuesOverview from '../components/dashboard/QueuesOverview';
 import LiveFeed from '../components/dashboard/LiveFeed';
+import ClaimDetailSection from '../components/claims/ClaimDetailSection';
+import { useClaims } from '../hooks/useClaims';
+import { useToast } from '../contexts/ToastContext';
 import './DashboardPage.css';
 
 interface KpiMetrics {
@@ -29,7 +32,11 @@ interface FeedEvent {
   severity?: 'high' | 'medium' | 'low';
 }
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  claimId?: string;
+}
+
+export default function DashboardPage({ claimId }: DashboardPageProps) {
   const [metrics, setMetrics] = useState<KpiMetrics>({
     totalClaims: 2451,
     inProgress: 185,
