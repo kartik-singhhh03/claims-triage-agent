@@ -29,20 +29,27 @@ export function RealtimeProvider({ children, wsUrl }: RealtimeProviderProps) {
   const [lastEvent, setLastEvent] = useState<FeedEvent | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [subscribers, setSubscribers] = useState<Set<(event: FeedEvent) => void>>(new Set());
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
+
+  const getWebSocketUrl = useCallback(() => {
+    if (wsUrl) return wsUrl;
+
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const wsProtocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
+    const baseUrl = apiUrl.replace(/^https?:\/\//, '');
+    return `${wsProtocol}://${baseUrl}/ws/claims`;
+  }, [wsUrl]);
 
   const reconnect = useCallback(() => {
-    if (ws?.readyState === WebSocket.OPEN || ws?.readyState === WebSocket.CONNECTING) {
-      return;
-    }
-
-    const url = wsUrl || `${window.location.protocol.replace('http', 'ws')}//${window.location.host}/ws/claims`;
+    const url = getWebSocketUrl();
 
     try {
       const newWs = new WebSocket(url);
 
       newWs.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('WebSocket connected to', url);
         setIsConnected(true);
+        setReconnectAttempt(0);
       };
 
       newWs.onmessage = (event) => {
@@ -64,39 +71,40 @@ export function RealtimeProvider({ children, wsUrl }: RealtimeProviderProps) {
         }
       };
 
-      newWs.onerror = (error) => {
-        console.error('WebSocket error:', error);
+      newWs.onerror = (event: Event) => {
+        console.error('WebSocket error on', url, '- Connection may not be available. This is normal if backend is not running.');
         setIsConnected(false);
       };
 
       newWs.onclose = () => {
-        console.log('WebSocket disconnected');
+        console.log('WebSocket disconnected from', url);
         setIsConnected(false);
-        // Attempt to reconnect after 3 seconds
-        setTimeout(() => {
-          reconnect();
-        }, 3000);
+        setWs(null);
       };
 
       setWs(newWs);
     } catch (error) {
-      console.error('Failed to connect to WebSocket:', error);
-      // Attempt to reconnect after 3 seconds
-      setTimeout(() => {
-        reconnect();
-      }, 3000);
+      console.error('Failed to create WebSocket connection to', url, ':', error);
+      setIsConnected(false);
     }
-  }, [wsUrl, subscribers, ws]);
+  }, [getWebSocketUrl, subscribers]);
 
   useEffect(() => {
     reconnect();
 
+    const interval = setInterval(() => {
+      if (!isConnected) {
+        reconnect();
+      }
+    }, 5000);
+
     return () => {
+      clearInterval(interval);
       if (ws) {
         ws.close();
       }
     };
-  }, []);
+  }, [isConnected, reconnect, ws]);
 
   const send = useCallback(
     (message: any) => {
